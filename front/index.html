@@ -1,0 +1,84 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+</head>
+
+<form name="dialog">
+    <input type="text" id="idDialog" name="idDialog" maxlength="50"/>
+    <input type="submit" value="Send"/>
+</form>
+
+<form name="message">
+    <input type="text" id="message" name="message" maxlength="50"/>
+    <input type="text" id="authorId" name="authorId" maxlength="50"/>
+    <input type="submit" value="Send"/>
+</form>
+
+<div id="messages"></div>
+
+<script>
+	const url = 'ws://localhost:8080/app.js'
+
+	const socket = new WebSocket(url, 'chat');
+
+    document.forms.dialog.onsubmit = async function(event) {
+      event.preventDefault();
+      const outgoingMessage = {
+        type: "dialog",
+        payload: {
+          idDialog: this.idDialog.value
+        },
+      }
+
+      socket.send(JSON.stringify(outgoingMessage));
+
+      const respond = await fetch(`http://localhost:8080/messages/${this.idDialog.value}`)
+      const data = await respond.json();
+
+      clearMessages();
+
+      for (let key of data) {
+        const message = key.message
+
+        showMessage(message);
+      }
+      return false;
+    }
+
+	document.forms.message.onsubmit = function(event) {
+      event.preventDefault();
+      const outgoingMessage = {
+        type: "message",
+        payload: {
+          message: this.message.value,
+          authorId: this.authorId.value,
+        }
+      }
+
+      socket.send(JSON.stringify(outgoingMessage));;
+      return false;
+	};
+
+	socket.onmessage = function(event) {
+		let incomingMessage = JSON.parse(event.data ?? "");
+
+		console.log('incomingMessage', incomingMessage)
+		showMessage(incomingMessage?.message);
+	};
+
+	socket.onclose = event => console.log(`Closed ${event.code}`);
+
+	function showMessage(message) {
+		let messageElem = document.createElement('div');
+
+		messageElem.textContent = message;
+		document.getElementById('messages').prepend(messageElem);
+	}
+
+    function clearMessages() {
+      const messagesContainer = document.getElementById('messages');
+        while (messagesContainer.firstChild) {
+          messagesContainer.removeChild(messagesContainer.firstChild);
+        }
+    }
+</script>
