@@ -1,9 +1,9 @@
 {
   "name": "test-socket-ws",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start: dev": "nodemon app.js"
+    "start:dev": "nodemon src/app.js"
   },
   "author": "Ihar Tsykala",
   "license": "ISC",

@@ -21,6 +21,24 @@ class ServiceMessage {
             idDialog: new ObjectId(id),
           },
         },
+	      {
+		      $lookup: {
+			      from: "users",
+			      localField: "authorId",
+			      foreignField: "_id",
+			      as: "user"
+		      }
+	      },
+	      {
+		      $project: {
+			      _id: 1,
+			      text: 1,
+			      idDialog: 1,
+			      authorId: 1,
+			      createdAt: 1,
+			      user: { $arrayElemAt: ["$user", 0] }
+		      }
+	      }
       ]);
     } catch (e) {
       console.log(e);

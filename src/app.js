@@ -27,6 +27,7 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(corsConfig);
 app.use(cors());
+
 app.use("/users", routerUsers);
 app.use("/dialogs", routerDialogs);
 app.use("/messages", routerMessages);

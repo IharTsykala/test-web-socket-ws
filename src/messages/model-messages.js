@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const messageSchema = new mongoose.Schema(
   {
-    message: {
+    text: {
       type: String
     },
     idDialog: {
@@ -12,7 +12,7 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId
     }
   },
-  { timeStamps: true }
+	{ timestamps: true }
 )
 
 const Message = mongoose.model("Messages", messageSchema)

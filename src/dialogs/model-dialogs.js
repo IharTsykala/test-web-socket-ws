@@ -13,7 +13,7 @@ const dialogSchema = new mongoose.Schema(
       }
     ]
   },
-  { timeStamps: true }
+	{ timestamps: true }
 )
 
 const Dialog = mongoose.model("dialogs", dialogSchema)

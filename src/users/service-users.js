@@ -41,12 +41,6 @@ class ServiceUser {
       console.log(e);
     }
   };
-
-  loginUser = async function (login, password) {
-    const user = await User.findByCredentials(login, password);
-    const token = await user.generateAuthToken();
-    return { user, token };
-  };
 }
 
 module.exports = ServiceUser;

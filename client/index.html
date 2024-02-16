@@ -8,8 +8,8 @@
     <input type="submit" value="Send"/>
 </form>
 
-<form name="message">
-    <input type="text" id="message" name="message" maxlength="50"/>
+<form name="text">
+    <input type="text" id="text" name="text" maxlength="50"/>
     <input type="text" id="authorId" name="authorId" maxlength="50"/>
     <input type="submit" value="Send"/>
 </form>
@@ -17,9 +17,10 @@
 <div id="messages"></div>
 
 <script>
-	const url = 'ws://localhost:8080/app.js'
+    const TEXT = 'text'
+	const URL = 'ws://localhost:8080/src/app.js'
 
-	const socket = new WebSocket(url, 'chat');
+	const socket = new WebSocket(URL, 'chat');
 
     document.forms.dialog.onsubmit = async function(event) {
       event.preventDefault();
@@ -38,19 +39,19 @@
       clearMessages();
 
       for (let key of data) {
-        const message = key.message
+        const message = key[TEXT]
 
         showMessage(message);
       }
       return false;
     }
 
-	document.forms.message.onsubmit = function(event) {
+	document.forms[TEXT].onsubmit = function(event) {
       event.preventDefault();
       const outgoingMessage = {
-        type: "message",
+        type: TEXT,
         payload: {
-          message: this.message.value,
+          text: this[TEXT].value,
           authorId: this.authorId.value,
         }
       }
@@ -62,8 +63,7 @@
 	socket.onmessage = function(event) {
 		let incomingMessage = JSON.parse(event.data ?? "");
 
-		console.log('incomingMessage', incomingMessage)
-		showMessage(incomingMessage?.message);
+		showMessage(incomingMessage?.[TEXT]);
 	};
 
 	socket.onclose = event => console.log(`Closed ${event.code}`);

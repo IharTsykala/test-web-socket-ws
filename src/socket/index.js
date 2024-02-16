@@ -10,14 +10,12 @@ function socket (ws, wss) {
 	ws.on("message", async (message) => {
 		try {
 			const data = JSON.parse(message);
-			
 			if (data.type === "dialog") {
 				idDialog = data.payload.idDialog
 			}
 			
-			if (data.type === "message") {
+			if (data.type === "text") {
 				const newMessage = await message_controller.addMessage({...data.payload, idDialog});
-				
 				wss.clients.forEach((client) => {
 					if (client.readyState === WebSocket.OPEN) {
 						client.send(JSON.stringify(newMessage));
